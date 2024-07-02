@@ -11,6 +11,12 @@ import (
 )
 
 func main() {
+	path, foundPath := os.LookupEnv("PATH")
+	var pathv []string
+	if foundPath {
+		pathv = strings.Split(path, ":")
+	}
+
 	for {
 		fmt.Fprint(os.Stdout, "$ ")
 
@@ -41,8 +47,19 @@ func main() {
 				for _, arg := range argv {
 					if _, contains := builtinSet[arg]; contains {
 						fmt.Fprintln(os.Stdout, arg+" is a shell builtin")
+						continue
+					}
+					commandPath := ""
+					for _, p := range pathv {
+						if _, err := os.Stat(p + "/" + arg); err == nil {
+							commandPath = arg + " is " + p + "/" + arg
+							break
+						}
+					}
+					if commandPath != "" {
+						fmt.Fprintln(os.Stdout, commandPath)
 					} else {
-						fmt.Fprintln(os.Stdout, arg+": not found")
+						fmt.Fprintln(os.Stdout, command+": command not found")
 					}
 				}
 			default:
