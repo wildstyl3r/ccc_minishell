@@ -61,7 +61,7 @@ func main() {
 			case "echo":
 				fmt.Fprintln(os.Stdout, strings.TrimSpace(args))
 			case "type":
-				builtinSet := map[string]struct{}{"echo": {}, "exit": {}, "type": {}}
+				builtinSet := map[string]struct{}{"echo": {}, "exit": {}, "type": {}, "pwd": {}}
 				argv := strings.Fields(args)
 				for _, arg := range argv {
 					if _, contains := builtinSet[arg]; contains {
