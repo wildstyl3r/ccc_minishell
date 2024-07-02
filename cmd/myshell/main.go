@@ -22,17 +22,19 @@ func main() {
 			}
 			fmt.Fprintln(os.Stdout, "error: ", err)
 		}
-		argv := strings.Fields(line)
-		if len(argv) > 0 {
-			switch argv[0] {
+		command, args, foundArgs := strings.Cut(line, " ")
+		if len(command) > 0 {
+			switch command {
 			case "exit":
 				exitCode := 0
-				if len(argv) > 1 {
-					exitCode, _ = strconv.Atoi(argv[1])
+				if foundArgs {
+					exitCode, _ = strconv.Atoi(args)
 				}
 				os.Exit(exitCode)
+			case "echo":
+				fmt.Fprintln(os.Stdout, strings.TrimSpace(args))
 			default:
-				fmt.Fprintln(os.Stdout, argv[0]+": command not found")
+				fmt.Fprintln(os.Stdout, command+": command not found")
 			}
 		}
 
