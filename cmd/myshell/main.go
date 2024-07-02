@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"os/exec"
 	"strconv"
 	"strings"
 
@@ -32,6 +33,24 @@ func main() {
 		command = strings.TrimSpace(command)
 		args = strings.TrimSpace(args)
 		if len(command) > 0 {
+			commandPath := ""
+			for _, p := range pathv {
+				if _, err := os.Stat(p + "/" + command); err == nil {
+					commandPath = p + "/" + command
+					break
+				}
+			}
+			if commandPath != "" {
+				cmd := exec.Command(commandPath, args)
+				cmd.Stdin = os.Stdin
+				cmd.Stdout = os.Stdout
+				err = cmd.Run()
+				if err != nil {
+					fmt.Fprintln(os.Stdout, "error: ", err)
+				}
+				continue
+			}
+
 			switch command {
 			case "exit":
 				exitCode := 0
@@ -52,12 +71,12 @@ func main() {
 					commandPath := ""
 					for _, p := range pathv {
 						if _, err := os.Stat(p + "/" + arg); err == nil {
-							commandPath = arg + " is " + p + "/" + arg
+							commandPath = p + "/" + arg
 							break
 						}
 					}
 					if commandPath != "" {
-						fmt.Fprintln(os.Stdout, commandPath)
+						fmt.Fprintln(os.Stdout, arg+" is "+commandPath)
 					} else {
 						fmt.Fprintln(os.Stdout, arg+": not found")
 					}
