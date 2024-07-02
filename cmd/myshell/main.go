@@ -59,7 +59,7 @@ func main() {
 					if commandPath != "" {
 						fmt.Fprintln(os.Stdout, commandPath)
 					} else {
-						fmt.Fprintln(os.Stdout, arg+": command not found")
+						fmt.Fprintln(os.Stdout, arg+": not found")
 					}
 				}
 			default:
