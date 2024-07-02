@@ -23,6 +23,8 @@ func main() {
 			fmt.Fprintln(os.Stdout, "error: ", err)
 		}
 		command, args, foundArgs := strings.Cut(line, " ")
+		command = strings.TrimSpace(command)
+		args = strings.TrimSpace(args)
 		if len(command) > 0 {
 			switch command {
 			case "exit":
