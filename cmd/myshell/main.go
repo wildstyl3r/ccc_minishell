@@ -35,6 +35,16 @@ func main() {
 				os.Exit(exitCode)
 			case "echo":
 				fmt.Fprintln(os.Stdout, strings.TrimSpace(args))
+			case "type":
+				builtinSet := map[string]struct{}{"echo": {}, "exit": {}, "type": {}}
+				argv := strings.Fields(args)
+				for _, arg := range argv {
+					if _, contains := builtinSet[arg]; contains {
+						fmt.Fprintln(os.Stdout, arg+" is a shell builtin")
+					} else {
+						fmt.Fprintln(os.Stdout, arg+": not found")
+					}
+				}
 			default:
 				fmt.Fprintln(os.Stdout, command+": command not found")
 			}
