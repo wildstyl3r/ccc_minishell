@@ -81,6 +81,12 @@ func main() {
 						fmt.Fprintln(os.Stdout, arg+": not found")
 					}
 				}
+			case "pwd":
+				wd, err := os.Getwd()
+				if err != nil {
+					fmt.Fprintln(os.Stdout, "error: ", err)
+				}
+				fmt.Fprintln(os.Stdout, wd)
 			default:
 				fmt.Fprintln(os.Stdout, command+": command not found")
 			}
