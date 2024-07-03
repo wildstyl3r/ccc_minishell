@@ -61,7 +61,7 @@ func main() {
 			case "echo":
 				fmt.Fprintln(os.Stdout, strings.TrimSpace(args))
 			case "type":
-				builtinSet := map[string]struct{}{"echo": {}, "exit": {}, "type": {}, "pwd": {}}
+				builtinSet := map[string]struct{}{"echo": {}, "exit": {}, "type": {}, "pwd": {}, "cd": {}}
 				argv := strings.Fields(args)
 				for _, arg := range argv {
 					if _, contains := builtinSet[arg]; contains {
@@ -87,6 +87,20 @@ func main() {
 					fmt.Fprintln(os.Stdout, "error: ", err)
 				}
 				fmt.Fprintln(os.Stdout, wd)
+			case "cd":
+				if args == "~" {
+					home, err := os.UserHomeDir()
+					if err != nil {
+						fmt.Fprintln(os.Stdout, "error: ", err)
+					}
+					os.Chdir(home)
+				} else {
+					if _, err := os.Stat(args); err == nil {
+						os.Chdir(args)
+					} else {
+						fmt.Fprintln(os.Stdout, "cd: "+args+": No such file or directory")
+					}
+				}
 			default:
 				fmt.Fprintln(os.Stdout, command+": command not found")
 			}
