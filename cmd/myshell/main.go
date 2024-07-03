@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"strings"
 
-	// Uncomment this block to pass the first stage
 	"fmt"
 	"os"
 )
@@ -32,6 +31,7 @@ func main() {
 		command, args, foundArgs := strings.Cut(line, " ")
 		command = strings.TrimSpace(command)
 		args = strings.TrimSpace(args)
+		argv := strings.Fields(args)
 		if len(command) > 0 {
 			commandPath := ""
 			for _, p := range pathv {
@@ -41,13 +41,11 @@ func main() {
 				}
 			}
 			if commandPath != "" {
-				cmd := exec.Command(commandPath, args)
+				cmd := exec.Command(commandPath, argv...)
 				cmd.Stdin = os.Stdin
 				cmd.Stdout = os.Stdout
-				err = cmd.Run()
-				if err != nil {
-					fmt.Fprintln(os.Stdout, "error: ", err)
-				}
+				cmd.Stderr = os.Stderr
+				cmd.Run()
 				continue
 			}
 
@@ -62,7 +60,6 @@ func main() {
 				fmt.Fprintln(os.Stdout, strings.TrimSpace(args))
 			case "type":
 				builtinSet := map[string]struct{}{"echo": {}, "exit": {}, "type": {}, "pwd": {}, "cd": {}}
-				argv := strings.Fields(args)
 				for _, arg := range argv {
 					if _, contains := builtinSet[arg]; contains {
 						fmt.Fprintln(os.Stdout, arg+" is a shell builtin")
